@@ -2,6 +2,8 @@ require 'net/http'
 require 'nokogiri'
 require_relative 'asu_class_info'
 
+require 'ruby-debug'
+
 class AsuScheduleScraper
   def get_class_info(term_code, class_number)
     doc = fetch_info(term_code, class_number)
@@ -10,6 +12,20 @@ class AsuScheduleScraper
     start_time = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='startTimeDateColumnValue']/text()")[0].to_s.strip
     end_time = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='endTimeDateColumnValue']/text()")[0].to_s.strip
     AsuClassInfo.new(name, days << " " << start_time << " " << end_time)
+  end
+
+  def get_class_status(term_code, class_number)
+    doc = fetch_info(term_code, class_number)
+    rel = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='availableSeatsColumnValue']/table/tr/td/span/span[@class='icontip']")[0].attributes["rel"].value
+    if rel == "#tt_seats-open" then
+      :open
+    elsif rel == "#tt_seats-reserved" then
+      :closed
+    elsif rel == "#tt_seats-closed" then
+      :closed
+    else
+      raise Error("Unknown status")
+    end
   end
 
   private
