@@ -1,5 +1,6 @@
 require 'net/http'
 require 'nokogiri'
+require_relative 'asu_class_info'
 
 class AsuScheduleScraper
   def get_class_info(term_code, class_number)
@@ -8,10 +9,7 @@ class AsuScheduleScraper
     days = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='dayListColumnValue']/text()")[0].to_s.strip
     start_time = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='startTimeDateColumnValue']/text()")[0].to_s.strip
     end_time = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='endTimeDateColumnValue']/text()")[0].to_s.strip
-puts "name: " << name
-puts "days: " << days
-puts "start_time: " << start_time
-puts "end_time: " << end_time
+    AsuClassInfo.new(name, days << " " << start_time << " " << end_time)
   end
 
   private
