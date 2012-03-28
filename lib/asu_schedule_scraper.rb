@@ -1,5 +1,4 @@
 require 'net/http'
-require 'cgi'
 require 'nokogiri'
 
 class AsuScheduleScraper
@@ -24,6 +23,7 @@ puts "end_time: " << end_time
     req["Cookie"] = cookie
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
+    http.ca_file = File.join(File.dirname(File.dirname(__FILE__)), "AddTrustExternalCARoot.crt")
     res = http.start do |http| 
       res = http.request(req)
       if res.code == "302" then

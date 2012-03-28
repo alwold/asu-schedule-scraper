@@ -5,6 +5,6 @@ Gem::Specification.new do |s|
   s.authors = ["Al Wold"]
   s.email = "alwold@gmail.com"
   s.summary = "Scrapes schedule data for Arizona State University"
-  s.files = ["lib/asu_schedule_scraper.rb"]
+  s.files = ["lib/asu_schedule_scraper.rb", "AddTrustExternalCARoot.crt"]
   s.add_runtime_dependency "nokogiri"
 end
