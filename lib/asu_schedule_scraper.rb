@@ -49,6 +49,9 @@ class AsuScheduleScraper
       end
       res
     end
-    Nokogiri::HTML(res.body)
+    doc = Nokogiri::HTML(res.body)
+    # this somehow makes decoding of entities work (https://twitter.com/#!/tenderlove/status/11489447561)
+    doc.encoding = "UTF-8"
+    return doc
   end
 end
