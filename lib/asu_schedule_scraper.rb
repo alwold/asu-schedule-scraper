@@ -2,8 +2,6 @@ require 'net/http'
 require 'nokogiri'
 require_relative 'asu_class_info'
 
-require 'ruby-debug'
-
 class AsuScheduleScraper
   def get_class_info(term_code, class_number)
     doc = fetch_info(term_code, class_number)
