@@ -5,11 +5,15 @@ require_relative 'asu_class_info'
 class AsuScheduleScraper
   def get_class_info(term_code, class_number)
     doc = fetch_info(term_code, class_number)
-    name = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='titleColumnValue']/a/text()")[0].to_s.strip
-    days = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='dayListColumnValue']/text()")[0].to_s.strip
-    start_time = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='startTimeDateColumnValue']/text()")[0].to_s.strip
-    end_time = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='endTimeDateColumnValue']/text()")[0].to_s.strip
-    AsuClassInfo.new(name, days << " " << start_time << " " << end_time)
+    name = string_value doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='titleColumnValue']/a/text()")[0]
+    days = string_value doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='dayListColumnValue']/text()")[0]
+    start_time = string_value doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='startTimeDateColumnValue']/text()")[0]
+    end_time = string_value doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='endTimeDateColumnValue']/text()")[0]
+    if name != nil
+      AsuClassInfo.new(name, days << " " << start_time << " " << end_time)
+    else
+      nil
+    end
   end
 
   def get_class_status(term_code, class_number)
@@ -26,7 +30,14 @@ class AsuScheduleScraper
     end
   end
 
-  private
+private
+  def string_value(node)
+    if node == nil
+      nil
+    else
+      node.to_s.strip
+    end
+  end
 
   def fetch_info(term_code, class_number)
     uri = URI("https://webapp4.asu.edu/catalog/classlist?&k=" << class_number << "&t=" << term_code + "&e=all&init=false&nopassive=true")
