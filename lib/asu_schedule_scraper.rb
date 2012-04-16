@@ -18,7 +18,12 @@ class AsuScheduleScraper
 
   def get_class_status(term_code, class_number)
     doc = fetch_info(term_code, class_number)
-    rel = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='availableSeatsColumnValue']/table/tr/td/span/span[@class='icontip']")[0].attributes["rel"].value
+    span = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='availableSeatsColumnValue']/table/tr/td/span/span[@class='icontip']")[0]
+    if span then
+      rel = span.attributes["rel"].value
+    else
+      return nil
+    end
     if rel == "#tt_seats-open" then
       :open
     elsif rel == "#tt_seats-reserved" then
