@@ -4,19 +4,21 @@ require_relative 'asu_class_info'
 
 class AsuScheduleScraper
   def get_class_info(term_code, class_number)
+    return nil if class_number.length > 5
     doc = fetch_info(term_code, class_number)
     name = string_value doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='titleColumnValue']/a/text()")[0]
     days = string_value doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='dayListColumnValue']/text()")[0]
     start_time = string_value doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='startTimeDateColumnValue']/text()")[0]
     end_time = string_value doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='endTimeDateColumnValue']/text()")[0]
     if name != nil
-      AsuClassInfo.new(name, days << " " << start_time << " " << end_time)
+      AsuClassInfo.new(name, days << " " << start_time << " - " << end_time)
     else
       nil
     end
   end
 
   def get_class_status(term_code, class_number)
+    return nil if class_number.length > 5
     doc = fetch_info(term_code, class_number)
     parent_span = doc.xpath("//tr[td/@class='classNbrColumnValue']/td[@class='availableSeatsColumnValue']/table/tr/td/span")[0]
     if parent_span.nil?
@@ -47,7 +49,7 @@ private
     if node == nil
       nil
     else
-      node.to_s.strip
+      node.to_s.strip.gsub("\u00A0", "")
     end
   end
 
